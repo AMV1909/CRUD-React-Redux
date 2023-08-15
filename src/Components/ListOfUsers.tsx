@@ -10,15 +10,16 @@ import {
     Badge,
 } from "@tremor/react";
 
-import { useAppDispatch, useAppSelector } from "../Hooks/store";
-import { UserId, deleteUserById } from "../Store/Users/slice";
+import { useAppSelector } from "../Hooks/store";
+import { useUserActions } from "../Hooks/useUserActions";
+import { UserId } from "../Store/Users/slice";
 
 export function ListOfUsers() {
     const users = useAppSelector((state) => state.users);
-    const dispatch = useAppDispatch();
+    const { deleteUser } = useUserActions();
 
-    const handleRemoveUser = (id: UserId) => {
-        dispatch(deleteUserById(id));
+    const handleDeleteUser = (id: UserId) => {
+        deleteUser(id);
     };
 
     return (
@@ -80,7 +81,7 @@ export function ListOfUsers() {
                                 </button>
 
                                 <button
-                                    onClick={() => handleRemoveUser(item.id)}
+                                    onClick={() => handleDeleteUser(item.id)}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
