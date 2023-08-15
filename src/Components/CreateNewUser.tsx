@@ -1,74 +1,98 @@
 import { Button, Card, TextInput, Title } from "@tremor/react";
-import { FormEvent, useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { object, string } from "yup";
 
 import { useUserActions } from "../Hooks/useUserActions";
 import { User } from "../Store/Users/slice";
 
 export function CreateNewUser() {
     const { addUser } = useUserActions();
-    const [user, setUser] = useState<User>({
+
+    const initialValues: User = {
         name: "",
         email: "",
         github: "",
-    });
-
-    const onChange = (e: FormEvent<HTMLInputElement>) => {
-        const { name, value } = e.currentTarget;
-
-        setUser((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!user.name || !user.email || !user.github) {
-            return;
-        }
-
-        addUser(user);
+    const handleSubmit = (values: User) => {
+        addUser(values);
     };
 
     return (
-        <Card style={{ marginTop: "16px" }}>
+        <Card className="mt-4">
             <Title>Create New User</Title>
 
-            <form
+            <Formik
+                initialValues={initialValues}
                 onSubmit={handleSubmit}
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "16px",
-                    marginTop: "16px",
-                }}
+                validationSchema={object({
+                    name: string().required(),
+                    email: string().email().required(),
+                    github: string().required(),
+                })}
             >
-                <TextInput
-                    onChange={onChange}
-                    name="name"
-                    placeholder="Write your name"
-                    required
-                />
+                {({ errors, touched }) => (
+                    <Form className="flex flex-col gap-4 mt-4">
+                        <div>
+                            <Field
+                                as={TextInput}
+                                name="name"
+                                placeholder="Write your name"
+                                className={`${
+                                    errors.name &&
+                                    touched.name &&
+                                    "border-2 border-red-400"
+                                }`}
+                            />
+                            <ErrorMessage
+                                component="p"
+                                name="name"
+                                className="text-red-400 text-sm ml-4 select-none"
+                            />
+                        </div>
 
-                <TextInput
-                    onChange={onChange}
-                    name="email"
-                    placeholder="Write your email"
-                    required
-                />
+                        <div>
+                            <Field
+                                as={TextInput}
+                                name="email"
+                                placeholder="Write your email"
+                                className={`${
+                                    errors.email &&
+                                    touched.email &&
+                                    "border-2 border-red-400"
+                                }`}
+                            />
+                            <ErrorMessage
+                                component="p"
+                                name="email"
+                                className="text-red-400 text-sm ml-4 select-none"
+                            />
+                        </div>
 
-                <TextInput
-                    onChange={onChange}
-                    name="github"
-                    placeholder="Write your github username"
-                    required
-                />
+                        <div>
+                            <Field
+                                as={TextInput}
+                                name="github"
+                                placeholder="Write your github username"
+                                className={`${
+                                    errors.github &&
+                                    touched.github &&
+                                    "border-2 border-red-400"
+                                }`}
+                            />
+                            <ErrorMessage
+                                component="p"
+                                name="github"
+                                className="text-red-400 text-sm ml-4 select-none"
+                            />
+                        </div>
 
-                <div>
-                    <Button>Create User</Button>
-                </div>
-            </form>
+                        <div>
+                            <Button type="submit">Create User</Button>
+                        </div>
+                    </Form>
+                )}
+            </Formik>
         </Card>
     );
 }

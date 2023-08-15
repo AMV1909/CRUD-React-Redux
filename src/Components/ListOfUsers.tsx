@@ -26,7 +26,7 @@ export function ListOfUsers() {
         <Card>
             <Title>
                 Usuario
-                <Badge style={{ marginLeft: "8px" }}>{users.length}</Badge>
+                <Badge className="ml-2">{users.length}</Badge>
             </Title>
 
             <Table>
@@ -43,19 +43,9 @@ export function ListOfUsers() {
                     {users.map((item) => (
                         <TableRow key={item.name}>
                             <TableCell>{item.id}</TableCell>
-                            <TableCell
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                }}
-                            >
+                            <TableCell className="flex items-center gap-2">
                                 <img
-                                    style={{
-                                        width: "32px",
-                                        height: "32px",
-                                        borderRadius: "50%",
-                                    }}
+                                    className="w-8 h-8 rounded-full"
                                     src={`https://unavatar.io/github/${item.github}`}
                                     alt={item.name}
                                 />
