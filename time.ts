@@ -1,1 +1,1 @@
-export const time = "https://youtu.be/bEEjuwujbbU?t=3545";
+export const time = "https://www.youtube.com/watch?v=bEEjuwujbbU&t=4687s";

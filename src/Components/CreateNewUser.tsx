@@ -1,12 +1,14 @@
-import { Button, Card, TextInput, Title } from "@tremor/react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Badge, Button, Card, TextInput, Title } from "@tremor/react";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { object, string } from "yup";
+import { useState } from "react";
 
 import { useUserActions } from "../Hooks/useUserActions";
 import { User } from "../Store/Users/slice";
 
 export function CreateNewUser() {
     const { addUser } = useUserActions();
+    const [result, setResult] = useState<"ok" | null>(null);
 
     const initialValues: User = {
         name: "",
@@ -14,8 +16,14 @@ export function CreateNewUser() {
         github: "",
     };
 
-    const handleSubmit = (values: User) => {
+    const handleSubmit = (values: User, { resetForm }: FormikHelpers<User>) => {
         addUser(values);
+        resetForm();
+
+        setResult("ok");
+        setTimeout(() => {
+            setResult(null);
+        }, 5000);
     };
 
     return (
@@ -24,6 +32,7 @@ export function CreateNewUser() {
 
             <Formik
                 initialValues={initialValues}
+                enableReinitialize
                 onSubmit={handleSubmit}
                 validationSchema={object({
                     name: string().required(),
@@ -89,6 +98,11 @@ export function CreateNewUser() {
 
                         <div>
                             <Button type="submit">Create User</Button>
+                            {result === "ok" && (
+                                <span>
+                                    <Badge>Guardado correctamente</Badge>
+                                </span>
+                            )}
                         </div>
                     </Form>
                 )}
