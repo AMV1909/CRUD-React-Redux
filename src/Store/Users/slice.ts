@@ -35,11 +35,11 @@ export interface User {
     github: string;
 }
 
-export interface UsersState extends User {
+export interface UserWithId extends User {
     id: UserId;
 }
 
-const initialState: UsersState[] = (() => {
+const initialState: UserWithId[] = (() => {
     const persistedState = localStorage.getItem("__redux__state__");
 
     return persistedState ? JSON.parse(persistedState).users : DEFAULT_STATE;
@@ -53,13 +53,28 @@ export const usersSlice = createSlice({
             return [...state, { ...action.payload, id: state.length + 1 + "" }];
         },
 
+        editUserById: (state, action: PayloadAction<UserWithId>) => {
+            const { id } = action.payload;
+
+            return state.map((user) => {
+                if (user.id === id) return action.payload;
+                return user;
+            });
+        },
+
         deleteUserById: (state, action: PayloadAction<UserId>) => {
             const id = action.payload;
             return state.filter((user) => user.id !== id);
+        },
+
+        rollbackUser: (state, action: PayloadAction<UserWithId>) => {
+            if (!state.some((user) => user.id === action.payload.id))
+                return [...state, action.payload];
         },
     },
 });
 
 export default usersSlice.reducer;
 
-export const { addNewUser, deleteUserById } = usersSlice.actions;
+export const { addNewUser, editUserById, deleteUserById, rollbackUser } =
+    usersSlice.actions;
